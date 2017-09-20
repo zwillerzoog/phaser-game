@@ -31,6 +31,6 @@ body {
     /* background-repeat: no-repeat; */
 }
 
-.tree2 {
-
+.hidden {
+    display: none;
 }
