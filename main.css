@@ -1,0 +1,36 @@
+body {
+    background-color: lightblue;
+}
+
+.ground {
+    background-color: green;
+    position: fixed;
+    width: 2000px;
+    height: 200px;
+    bottom: 0;
+}
+
+.foliage {
+    /* width: 320px;
+    height: 450px; */
+    /* outline: 1px red solid; */
+   
+    background-image: url('foliagePack_retina.png');
+    background-repeat: no-repeat;
+}
+
+.tree1 {
+    position: fixed;
+    left: 200px;
+    top: 100px;
+    width: 133px;
+    height: 469px;
+    /* outline: 1px red solid; */
+    /* background-image: url('foliagePack_retina.png'); */
+    background-position: -1512px -1210px;
+    /* background-repeat: no-repeat; */
+}
+
+.tree2 {
+
+}
