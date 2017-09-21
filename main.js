@@ -6,7 +6,29 @@ let game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
     game.load.image('sheet', 'foliagePack_retina.png')
+    //trees
     game.load.image('tree5', 'assets/foliage/005.png')
+    game.load.image('tree6', 'assets/foliage/foliagePack_006.png')
+    game.load.image('tree7', 'assets/foliage/foliagePack_007.png')
+    game.load.image('tree8', 'assets/foliage/foliagePack_008.png')
+    game.load.image('tree9', 'assets/foliage/foliagePack_009.png')
+    game.load.image('tree10', 'assets/foliage/foliagePack_010.png')
+    game.load.image('tree11', 'assets/foliage/foliagePack_011.png')
+    game.load.image('tree12', 'assets/foliage/foliagePack_012.png')
+    game.load.image('tree13', 'assets/foliage/foliagePack_013.png')
+    game.load.image('tree14', 'assets/foliage/foliagePack_014.png')
+    game.load.image('tree15', 'assets/foliage/foliagePack_015.png')
+    game.load.image('tree16', 'assets/foliage/foliagePack_016.png')
+    game.load.image('tree17', 'assets/foliage/foliagePack_017.png')
+    game.load.image('tree18', 'assets/foliage/foliagePack_018.png')
+    game.load.image('tree19', 'assets/foliage/foliagePack_019.png')
+    game.load.image('tree20', 'assets/foliage/foliagePack_020.png')
+    game.load.image('tree21', 'assets/foliage/foliagePack_021.png')
+
+
+
+
+    //clouds
     game.load.image('cloud1', 'assets/clouds/cloud1.png')
     game.load.image('cloud2', 'assets/clouds/cloud2.png')
     game.load.image('cloud3', 'assets/clouds/cloud3.png')
@@ -42,7 +64,19 @@ function create() {
 
     trees = game.add.group()
     trees.enableBody = true;
-    const tree5 = trees.create(90, game.world.height -300, 'tree5')
+    //add offset to trees
+    //make variety, not randomness
+    //one tree every ....100px or whatever
+    // blend in some randomness maybe?
+    for (let i = 6; i < 17; i++) {
+        let position = randomNumber(0, 3000);
+        const tree = trees.create(position, game.world.height -300, `tree${i}`)
+    }
+    //add parallax scrolling to tree layers!!!!
+    //scale sprite up or down
+    //foreground where the trees are in front of the fox
+    // const tree5 = trees.create(90, game.world.height -300, 'tree5')
+    // const tree6 = trees.create(300, game.world.height -300, 'tree6')
 
     //fox
     fox = game.add.sprite(153, game.world.height -0, 'fox');
@@ -64,7 +98,8 @@ function create() {
     foxJump.anchor.setTo(0.5);
     game.physics.arcade.enable(foxJump);
     foxJump.body.bounce.y = 0.6;
-    foxJump.body.gravity.y = 100;
+    
+    foxJump.body.gravity.y = 300;
     foxJump.body.collideWorldBounds = true;
     foxJump.animations.add('jump', [0,1,2,3,4,5,6,7,8,9,
         10,11,12,13,14,15,16,17,18,19,
@@ -87,10 +122,14 @@ function create() {
     //clouds
     clouds = game.add.group();
     clouds.enableBody = true;
+    //use collide world bounds to see when the clouds leave the world
     for (let i = 0; i < 9; i++) {
         let height = randomNumber(0, 150)
         let position = randomNumber(-100, 900)
         let cloud = clouds.create(position, height, `cloud${i}`)
+        //if (cloud(i) has left/collided the world) {
+        // when cloud has left, spawn another
+        //} 
         cloud.body.velocity.x = 20;
 
     } 
@@ -140,37 +179,41 @@ function update() {
             pauseFox.visible = false;
             pauseFox.animations.stop();
             break;
+        //case idle elapsed time:
         default:
             pauseFox.visible = true;
-            foxJump.animations.stop();
+            // foxJump.animations.stop();
             fox.animations.stop();
+            //change sprite sheet png
+            //run animation and pause
+            //two states
+            //if left idle for 30 seconds, play twitch 
+            //maybe like a timeout?
             pauseFox.animations.play('pause')
             // fox.frame = 6;
-         
-
     }
-
+    let jumping;
     //jumping
     switch(true) {
         case cursors.up.isDown:
+            jumpRequest();
             fox.visible = false;
             pauseFox.visible = false;
             foxJump.visible = true;
+            jumping = true;
+            //jumping is true
+            if (jumping)
             foxJump.animations.play('jump');
-            fox.body.velocity.y = 300;
-            foxJump.body.velocity.y=900;
+            //;look into phaser interrupts
+            //state machine
+            //THIS doesn't work. Why?
+            //inside a rectangle
+            //3 parts to jump
+            // foxJump.body.velocity.y = -300;
+            // fox.body.velocity.y = -100;
+            //fall look up phaser physics for gravity
+            //falling animation is midair idling
             break;
-        // case cursors.up.isDown && cursors.right.isDown:
-        //     fox.visible = false;
-        //     foxJump.visible = true;
-        //     fox.body.velocity.x = 250;
-            
-        //     break;
-        // case cursors.up.isDown && cursors.left.isDown:
-        //     fox.visible = false;
-        //     foxJump.visible = true;
-        //     fox.body.velocity.x = -250;
-        //     break;
         default:
             // pauseFox.visible = true;
             foxJump.visible = false;
@@ -178,6 +221,12 @@ function update() {
             // foxJump.frame = 0;
             pauseFox.animations.play('pause')
     }
+
+}
+
+function jumpRequest() {
+    //what is character doing? can he jump?
+    //THEN jump === true
 }
 
 
