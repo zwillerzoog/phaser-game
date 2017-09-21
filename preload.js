@@ -1,0 +1,40 @@
+export function preload() {
+    game.load.image('sheet', 'foliagePack_retina.png')
+    //trees
+    game.load.image('tree5', 'assets/foliage/005.png')
+    game.load.image('tree6', 'assets/foliage/foliagePack_006.png')
+    game.load.image('tree7', 'assets/foliage/foliagePack_007.png')
+    game.load.image('tree8', 'assets/foliage/foliagePack_008.png')
+    game.load.image('tree9', 'assets/foliage/foliagePack_009.png')
+    game.load.image('tree10', 'assets/foliage/foliagePack_010.png')
+    game.load.image('tree11', 'assets/foliage/foliagePack_011.png')
+    game.load.image('tree12', 'assets/foliage/foliagePack_012.png')
+    game.load.image('tree13', 'assets/foliage/foliagePack_013.png')
+    game.load.image('tree14', 'assets/foliage/foliagePack_014.png')
+    game.load.image('tree15', 'assets/foliage/foliagePack_015.png')
+    game.load.image('tree16', 'assets/foliage/foliagePack_016.png')
+    game.load.image('tree17', 'assets/foliage/foliagePack_017.png')
+    game.load.image('tree18', 'assets/foliage/foliagePack_018.png')
+    game.load.image('tree19', 'assets/foliage/foliagePack_019.png')
+    game.load.image('tree20', 'assets/foliage/foliagePack_020.png')
+    game.load.image('tree21', 'assets/foliage/foliagePack_021.png')
+
+    //clouds
+    game.load.image('cloud1', 'assets/clouds/cloud1.png')
+    game.load.image('cloud2', 'assets/clouds/cloud2.png')
+    game.load.image('cloud3', 'assets/clouds/cloud3.png')
+    game.load.image('cloud4', 'assets/clouds/cloud4.png')
+    game.load.image('cloud5', 'assets/clouds/cloud5.png')
+    game.load.image('cloud6', 'assets/clouds/cloud6.png')
+    game.load.image('cloud7', 'assets/clouds/cloud7.png')
+    game.load.image('cloud8', 'assets/clouds/cloud8.png')
+    game.load.image('cloud0', 'assets/clouds/cloud9.png')
+    game.load.image('sky', 'assets/clouds/sky.png')
+    game.load.image('grass', 'assets/foliage/grass.png')
+    game.load.image('green', 'assets/foliage/green.png')
+
+    //fox
+    game.load.spritesheet('fox', 'assets/fox/fox_running.png', 153, 139)
+    game.load.spritesheet('jump', 'assets/fox/fox_jump.png', 153, 139)
+    game.load.spritesheet('pause', 'assets/fox/fox_pause.png', 153, 139)
+}
