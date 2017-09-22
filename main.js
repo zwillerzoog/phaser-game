@@ -14,9 +14,7 @@ let game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
     game.load.image('sheet', 'foliagePack_retina.png')
-    //trees
-    game.load.image('trees', 'assets/foliage/tree_spritesheet.png')
-    game.load.image('backgroundTrees', 'assets/foliage/tree_spritesheet.png')
+  
     
     //obstacles
     game.load.image('leaf', 'assets/foliage/foliagePack_018.png')
@@ -45,6 +43,10 @@ function preload() {
     game.load.image('green', 'assets/foliage/green.png')
     game.load.image('platform', 'assets/foliage/green_platform.png')
     
+    //trees
+    game.load.image('trees', 'assets/foliage/tree_spritesheet2.png')
+    game.load.image('backgroundTrees', 'assets/foliage/tree_spritesheet2.png')
+
     //fox
     game.load.spritesheet('fox', 'assets/fox/fox_running.png', 153, 139)
     game.load.spritesheet('jump', 'assets/fox/fox_jump.png', 153, 139)
@@ -101,15 +103,7 @@ function create() {
     ground.body.immovable = true;
     platform = game.add.tileSprite(0,550,3000, 0, 'green')
 
-    //trees
-    backgroundTrees = game.add.tileSprite(0, -625, 3000, 1200, 'backgroundTrees')
-    backgroundTrees.tileScale.y = .5;
-    backgroundTrees.tileScale.x = .5;
-    game.physics.enable(backgroundTrees)
-    trees = game.add.tileSprite(0, -590, 3000, 1200, 'trees')
-    trees.tileScale.y = .5
-    trees.tileScale.x = .5
-    game.physics.enable(trees)
+
 
     //FLOWERS
     parent = game.add.sprite(-100,530, 'flower1')
@@ -151,6 +145,7 @@ function create() {
     //repeat clouds
     game.time.events.repeat(Phaser.Timer.SECOND * 10, 10, createClouds, this);
     clouds = game.add.group();
+    // game.world.bringToBottom(clouds)
     clouds.enableBody = true;
     for (let i = 0; i < 9; i++) {
         let height = randomNumber(0, 150)
@@ -160,6 +155,16 @@ function create() {
         cloud.body.velocity.x = speed;
     }
     
+        //trees
+        backgroundTrees = game.add.tileSprite(0, -570, 4006, 1200, 'backgroundTrees')
+        backgroundTrees.tileScale.y = .5;
+        backgroundTrees.tileScale.x = .5;
+        game.physics.enable(backgroundTrees)
+        trees = game.add.tileSprite(0, -550, 4006, 1200, 'trees')
+        trees.tileScale.y = .5
+        trees.tileScale.x = .5
+        
+        game.physics.enable(trees)
     
     // game.camera.follow(fox)
     cursors = game.input.keyboard.createCursorKeys();
@@ -210,7 +215,7 @@ function createClouds() {
 clouds = game.add.group();
 clouds.enableBody = true;
     for (let i = 0; i < 9; i++) {
-        let height = randomNumber(0, 150)
+        let height = randomNumber(0, 90)
         let position = randomNumber(-2000, -200)
         let cloud = clouds.create(position, height, `cloud${i}`)
         let speed = randomNumber(15, 25)
@@ -323,12 +328,11 @@ function stopRequest() {
 }
 
 function jumpRequest() {
-    console.log('flower', flower1)
-    // foxJump.body.velocity.y = 0;
     foxJump.scale.setTo(-1,1)
     foxJump.revive()
     fox.kill()
     pauseFox.kill();
+    foxJump.animations.play('jump')
     foxJump.body.velocity.y = -100
     fox.body.velocity.y =-100
     pauseFox.body.velocity.y = -100
@@ -338,7 +342,7 @@ function runRequest() {
     // console.log(flower1.body.velocity)
     // console.log(flower1.children[1].body.velocity)
     trees.tilePosition.x += -6;
-    backgroundTrees.tilePosition.x += -3
+    backgroundTrees.tilePosition.x += -5
     // flower1.body.velocity.x = -100;
     flower2.body.velocity.x = -200;
     flower3.body.velocity.x = -200;
