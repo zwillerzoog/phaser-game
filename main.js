@@ -24,6 +24,10 @@ function preload() {
     game.load.image('flower2', 'assets/flowers/flower2.png')
     game.load.image('flower3', 'assets/flowers/flower3.png')
     game.load.image('flower4', 'assets/flowers/flower4.png')
+    game.load.image('flowers', 'assets/flowers/flower_spritesheet.png')
+
+    //treats
+    game.load.image('cherry', 'assets/flowers/cherry.png')
 
     //clouds
     game.load.image('cloud1', 'assets/clouds/cloud1.png')
@@ -66,10 +70,13 @@ let flower1;
 let flower2;
 let flower3;
 let flower4;
+let flower5;
 let leaf;
 let jumpTimer = 0;
-let nickname
-
+let treats;
+let cherry;
+let scoreText;
+let score = 0;
 
 
 function create() {
@@ -81,21 +88,20 @@ function create() {
     mountains = game.add.tileSprite(0,240,3000, 0, 'mountains')
     mountains.tileScale.y = 2;
     mountains.tileScale.x = 2;
-    // game.add.tileSprite(0,490,3000, 0, 'grass')
     
-    
+    //score
+    scoreText = game.add.text(16, 16, 'score:0', {fontSize: '32px',
+    fill: '#000' });
+
+    //ground
     platforms = game.add.group();
     platforms.enableBody = true;
     const grass = platforms.create(0, game.world.height -110, 'platform')
     const ground = platforms.create(0, game.world.height -10, 'platform')
-    
     ground.body.immovable = true;
-    // ground.fixedToCamera = true;
-//    grass.fixedToCamera = true;
-
     platform = game.add.tileSprite(0,550,3000, 0, 'green')
 
-    
+    //trees
     backgroundTrees = game.add.tileSprite(0, -625, 3000, 1200, 'backgroundTrees')
     backgroundTrees.tileScale.y = .5;
     backgroundTrees.tileScale.x = .5;
@@ -105,25 +111,44 @@ function create() {
     trees.tileScale.x = .5
     game.physics.enable(trees)
 
-    obstacles = game.add.group();
-    obstacles.enableBody = true;
-  
-        flower1 = obstacles.create(0, game.world.height -100, `flower1`) 
-        flower1.position.x = 300;
-        flower2 = obstacles.create(0, game.world.height -100, `flower2`) 
-        flower2.position.x = 600;
-        flower3 = obstacles.create(0, game.world.height -50, `flower3`) 
-        flower3.position.x = 440;
-        flower4 = obstacles.create(0, game.world.height -50, `flower4`) 
-        flower4.position.x = 780;
-    
-    
-    // const ceiling = platforms.create(0, game.world.height -100, 'platform')
-    // ceiling.body.immovable = true;
-    // ceiling.position.x 
+    //FLOWERS
+    parent = game.add.sprite(-100,530, 'flower1')
+    flower2 = game.make.sprite(1000,0, 'flower2')
+    flower3 = game.make.sprite(600,0, 'flower3')
+    flower4 = game.make.sprite(400,0, 'flower4')
+    flower5 = game.make.sprite(800, 0, 'flower1')
+    parent.addChild(flower2)
+    parent.addChild(flower3)
+    parent.addChild(flower4)
+    parent.enableBody = true;
+    flower2.enableBody = true;
+    flower3.enableBody = true;
+    flower4.enableBody = true;
+    game.physics.enable(parent)
 
+    //repeat flowers
+    game.time.events.repeat(Phaser.Timer.SECOND * 5, 10, createFlowers, this)
+    // game.physics.enable(flower1)
+    // game.physics.enable(flower2)
+    // game.physics.enable(flower3)
+    // game.physics.enable(flower4)
+                            // obstacles = game.add.group();
+                            // obstacles.enableBody = true;
+                        
+                            //     flower1 = obstacles.create(0, game.world.height -50, `flower1`) 
+                            //     flower1.position.x = 900;
 
+                            //     flower2 = obstacles.create(0, game.world.height -50, `flower2`) 
+                            //     flower2.position.x = 1300;
+                            //     flower3 = obstacles.create(0, game.world.height -50, `flower3`) 
+                            //     flower3.position.x = 400;
+                            //     flower4 = obstacles.create(0, game.world.height -50, `flower4`) 
+                            //     flower4.position.x = 1700;
+    //repeat Obstacles
 
+    // game.time.events.repeat(Phaser.Timer.SECOND * 5, 10, createFlowers, this)
+
+    //repeat clouds
     game.time.events.repeat(Phaser.Timer.SECOND * 10, 10, createClouds, this);
     clouds = game.add.group();
     clouds.enableBody = true;
@@ -146,7 +171,7 @@ function create() {
     game.physics.arcade.enable(foxJump);
     // foxJump.body.bounce.y = 0.1;
     
-    foxJump.body.gravity.y = 500;
+    foxJump.body.gravity.y = 800;
     foxJump.body.collideWorldBounds = true;
     jump = foxJump.animations.add('jump', [0,1,2,3,4,5,6,7,8,9,
         10,11,12,13,14,15,16,17,18,19,
@@ -158,7 +183,7 @@ function create() {
 
     game.physics.arcade.enable(pauseFox);
     // pauseFox.body.bounce.y = 0.1;
-    pauseFox.body.gravity.y = 500;
+    pauseFox.body.gravity.y = 1000;
     pauseFox.body.collideWorldBounds = true;
     pauseFox.animations.add('pause', [0,1,2,3,4,5,6,7,8,9,
         10,11,12,13,14,15,16,17,18,19,
@@ -209,6 +234,34 @@ function createTrees() {
     }
 }
 
+function createFlowers() {
+    parent = game.add.sprite(-100,530, 'flower1')
+    flower2 = game.make.sprite(1000,0, 'flower2')
+    flower3 = game.make.sprite(600,0, 'flower3')
+    flower4 = game.make.sprite(400,0, 'flower4')
+    flower5 = game.make.sprite(800, 0, 'flower1')
+    parent.addChild(flower2)
+    parent.addChild(flower3)
+    parent.addChild(flower4)
+    parent.enableBody = true;
+    flower2.enableBody = true;
+    flower3.enableBody = true;
+    flower4.enableBody = true;
+    game.physics.enable(parent)
+    // obstacles = game.add.group();
+    // obstacles.enableBody = true;
+    // console.log(obstacles)
+        // flower1 = obstacles.create(0, game.world.height -50, `flower1`) 
+        // flower1.position.x = 1900;
+
+        // flower2 = obstacles.create(0, game.world.height -50, `flower2`) 
+        // flower2.position.x = 1300;
+        // flower3 = obstacles.create(0, game.world.height -50, `flower3`) 
+        // flower3.position.x = 1400;
+        // flower4 = obstacles.create(0, game.world.height -50, `flower4`) 
+        // flower4.position.x = 2500;
+}
+
 function randomNumber(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min)
 }
@@ -216,14 +269,19 @@ function randomNumber(min, max) {
 
 
 function update() {
-    hitPlatform = game.physics.arcade.collide(fox, platforms)
-    game.physics.arcade.collide(platforms, fox);
-    game.physics.arcade.collide(obstacles, fox);
+    // hitPlatform = game.physics.arcade.collide(fox, platforms)
+    // game.physics.arcade.collide(platforms, fox);
+    // game.physics.arcade.collide(obstacles, fox);
     game.physics.arcade.overlap(leaf, fox, idle, null, this);
+    game.physics.arcade.overlap(fox, flower1, overlap, null, this)
+    game.physics.arcade.overlap(fox, flower2, overlap, null, this)
+    game.physics.arcade.overlap(fox, flower3, overlap, null, this)
+    game.physics.arcade.overlap(fox, flower4, overlap, null, this)
     // game.physics.arcade.moveToObject(foxJump, fox, 10, 100);
     // game.physics.arcade.moveToObject(pauseFox, fox, 50, 50)
     fox.body.velocity.x = 0;
     foxJump.body.velocity.y = 0;
+    
     // pauseFox.visible = false;
     // foxJump.visible = false;
     // fox.visible = false;
@@ -265,44 +323,28 @@ function stopRequest() {
 }
 
 function jumpRequest() {
+    console.log('flower', flower1)
     // foxJump.body.velocity.y = 0;
     foxJump.scale.setTo(-1,1)
     foxJump.revive()
     fox.kill()
     pauseFox.kill();
-    foxJump.animations.play('jump');
-    // console.log('time is: ', game.time.now)
-    // console.log(jumpTimer)
-    if (game.time.now > jumpTimer) {
-        // console.log(game.time.now - jumpTimer)
-        foxJump.body.velocity.y = -400;
-
-        // pauseFox.body.velocity.y = -400
-        jumpTimer = game.time.now + 1000;
-    } else { console.log('hi')}
-   
+    foxJump.body.velocity.y = -100
+    fox.body.velocity.y =-100
+    pauseFox.body.velocity.y = -100
 }
 
-// function leapRequest() {
-//     console.log('leaping')
-//     trees.tilePosition.x += -6;
-//     backgroundTrees.tilePosition.x += -3
-//     leaf.body.velocity.x += -6;
-//     jumpRequest();
-    
-// }
-
 function runRequest() {
+    // console.log(flower1.body.velocity)
+    // console.log(flower1.children[1].body.velocity)
     trees.tilePosition.x += -6;
     backgroundTrees.tilePosition.x += -3
-    flower1.body.velocity.x += -6;
-    flower2.body.velocity.x += -6;
-    flower3.body.velocity.x += -6;
-    flower4.body.velocity.x += -6;
+    // flower1.body.velocity.x = -100;
+    flower2.body.velocity.x = -200;
+    flower3.body.velocity.x = -200;
+    flower4.body.velocity.x = -200;
     if (jump.isPlaying) {
-        // console.log('he jumpin')
         foxJump.revive();
-
     } else {
     fox.revive()
     foxJump.kill()
@@ -314,6 +356,11 @@ function runRequest() {
 }
 
 function idle() {
+   
+    parent.body.velocity.x = 0;
+    flower2.body.velocity.x = 0;
+    flower3.body.velocity.x = 0;
+    flower4.body.velocity.x = 0;
     if (jump.isPlaying) {
         // console.log('he jumpin', foxJump.body.position)
         foxJump.revive()
@@ -324,7 +371,13 @@ function idle() {
         foxJump.kill()
         pauseFox.animations.play('pause', 12)
     }
-    
+}
+
+function overlap(sprite, obstacle) {
+    console.log('his', obstacle)
+    obstacle.kill();
+    score += 10;
+    scoreText.text = 'Score: ' + score;
 }
 
 function render() {
