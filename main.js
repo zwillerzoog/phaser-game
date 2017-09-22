@@ -1,6 +1,14 @@
 'use strict'
 console.log('hello')
 
+let state = {
+    fox: {
+        run: false,
+        jump: false,
+        pause: true
+    }
+}
+
 
 let game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
@@ -8,7 +16,7 @@ function preload() {
     game.load.image('sheet', 'foliagePack_retina.png')
     //trees
     game.load.image('trees', 'assets/foliage/tree_spritesheet.png')
-
+    game.load.image('backgroundTrees', 'assets/foliage/tree_spritesheet.png')
     //clouds
     game.load.image('cloud1', 'assets/clouds/cloud1.png')
     game.load.image('cloud2', 'assets/clouds/cloud2.png')
@@ -43,6 +51,8 @@ let backgroundTrees;
 let platforms;
 let platform;
 let hitPlatform;
+let jump;
+let foxCanJump;
 
 
 
@@ -74,15 +84,16 @@ function create() {
     // platforms.enableBody = true;
     // const ground = platforms.create()
 
-    trees = game.add.tileSprite(0, -590, 3000, 1200, 'trees')
-    backgroundTrees = game.add.tileSprite(0, -600, 3000, 1200, 'trees')
-    backgroundTrees.anchor.setTo(0.5);
-    backgroundTrees.scale.setTo(-1, 1)
-    trees.tileScale.y = .5
-    trees.tileScale.x = .5
+    
+    backgroundTrees = game.add.tileSprite(0, -625, 3000, 1200, 'backgroundTrees')
     backgroundTrees.tileScale.y = .5;
     backgroundTrees.tileScale.x = .5;
-
+    game.physics.enable(backgroundTrees)
+    trees = game.add.tileSprite(0, -590, 3000, 1200, 'trees')
+    trees.tileScale.y = .5
+    trees.tileScale.x = .5
+    game.physics.enable(trees)
+    
     game.time.events.repeat(Phaser.Timer.SECOND * 10, 10, createClouds, this);
     clouds = game.add.group();
     clouds.enableBody = true;
@@ -159,9 +170,9 @@ function create() {
     
     foxJump.body.gravity.y = 500;
     foxJump.body.collideWorldBounds = true;
-    foxJump.animations.add('jump', [0,1,2,3,4,5,6,7,8,9,
+    jump = foxJump.animations.add('jump', [0,1,2,3,4,5,6,7,8,9,
         10,11,12,13,14,15,16,17,18,19,
-        20,21,22,23,24,25,26,27,28,29], 30, true)
+        20,21,22,23,24,25,26,27,28,29], 30, false)
 
     //pause fox
     pauseFox = game.add.sprite(154, game.world.height -80, 'pause')
@@ -217,47 +228,59 @@ function update() {
     game.physics.arcade.moveToObject(foxJump, fox, 10, 100);
     game.physics.arcade.moveToObject(pauseFox, fox, 50, 50)
     fox.body.velocity.x = 0;
+    foxJump.body.velocity.y =0;
     pauseFox.visible = false;
     foxJump.visible = false;
     fox.visible = false;
+    
+    // jumpRequest();
 //controls
 
     //running
     switch (true) {
 
-        case cursors.left.isDown:
-            fox.visible = true;
-            fox.body.velocity.x = -250;
+        // case cursors.left.isDown:
+        //     fox.visible = true;
+        //     // fox.body.velocity.x = -250;
             
-            fox.animations.play('left');
-            fox.scale.setTo(1, 1)
-            //jump
-            foxJump.scale.setTo(1,1)
-            
-            //pause
-            pauseFox.scale.setTo(1,1)
-            pauseFox.animations.stop();
-            //trees
-            // trees.tilePosition.x += .5;
-            // backgroundTrees.tilePosition += .25;
-            break;
-
-        case cursors.right.isDown:
-            fox.visible = true;
-            fox.body.velocity.x = 250;
+        //     fox.animations.play('left');
+        //     fox.scale.setTo(1, 1)
+        //     //jump
+        //     foxJump.scale.setTo(1,1)
+        //     //pause
+        //     pauseFox.scale.setTo(1,1)
+        //     pauseFox.animations.stop();
+        //     //trees
+        //     trees.tilePosition.x += 10;
+        //     backgroundTrees.tilePosition += 2;
+        //     //clouds
+        //     // clouds.position.x += 10;
+        //     break;
+        case cursors.right.isDown && cursors.up.isDown:
+        console.log('big whoop')
+        fox.visible = false;
+        fox.animations.stop()
+        foxJump.visible = true;
+        break;
+        case cursors.right.isDown && cursors.up.isUp:
+            fox.visible = false;
+            foxJump.visible = true;
+            // foxJump.visible = true;
+            // fox.body.velocity.x = 250;
             fox.animations.play('right')
             fox.scale.setTo(-1, 1)
             //jump
             foxJump.scale.setTo(-1,1)
-            foxJump.visible = false;
+            // foxJump.visible = false;
             //pause
             pauseFox.scale.setTo(-1,1)
-            pauseFox.visible = false;
+            // pauseFox.visible = false;
             pauseFox.animations.stop();
             //trees
-            // trees.tilePosition.x += -.5;
-            // backgroundTrees.tilePosition.x += -.25;
+            trees.tilePosition.x += -8;
+            backgroundTrees.tilePosition.x += -2;
             break;
+
         //case idle elapsed time:
         default:
             pauseFox.visible = true;
@@ -268,13 +291,15 @@ function update() {
             //two states
             //if left idle for 30 seconds, play twitch 
             //maybe like a timeout?
-            pauseFox.animations.play('pause')
+            pauseFox.animations.play('pause', 15)
             // fox.frame = 6;
     }
     let jumping;
     //jumping
     switch(true) {
         case cursors.up.isDown:
+            // foxCanJump = true;
+            // console.log(fox)
             jumpRequest();
                             // fox.visible = false;
                             // pauseFox.visible = false;
@@ -295,23 +320,70 @@ function update() {
             break;
         default:
             // pauseFox.visible = true;
-            foxJump.visible = false;
-            foxJump.animations.stop();
+            // foxCanJump = false;
+            // foxJump.visible = false;
+            // foxJump.animations.stop();
             // foxJump.frame = 0;
-            pauseFox.animations.play('pause')
+            pauseFox.animations.play('pause', 15)
     }
 
 }
 
 function jumpRequest() {
+    // if (jump.isFinished) {
+    //     //already jumping
+    //     console.log('finishedjumping! it returned')
+    //     // console.log(jump, 'jump from if')
+    //     // console.info(jump);
+    //     return;
+    // }
+
+    // if (jump.isPlaying) {
+    //     //already jumping
+    //     console.error('already jumping!')
+    //     // console.log(jump, 'jump from if')
+    //     // console.info(jump);
+    //     return;
+    // }
+
     //what is character doing? can he jump?
     //THEN jump === true
-    console.log(fox.body.touching.down)
-    if (cursors.up.isDown && fox.body.touching.down && hitPlatform) {
-        // console.log('ohhh')
-        foxJump.body.velocity.y = -400;
-    }
+    
+    // console.log(fox.body.touching.down)
+    // if (cursors.up.isDown && fox.body.touching.down && hitPlatform) {
+        // fox.visible = false;
+        // pauseFox.visible = false;
+        // foxJump.visible = true;
+        // let shouldLoop = false;
+        // console.log(jump.currentFrame.index)
+        // jump.currentFrame.index = 0;
+            // console.log('yup he can')
+            // console.log(foxCanJump)
+        //    jump.isFinished = false;
+        // console.log('jump, ', jump)
+        // if (!jump.isFinished) {
+            // fox.visible = false;
+            // pauseFox.visible = false;
+            foxJump.visible = true;
+            fox.visible = false;
+            // console.log(jump.currentFrame.index)
+            // jump.next(10)
+
+            // jump.onComplete.add(stopJump)
+            foxJump.animations.play('jump');
+
+
 }
+
+function stopJump() {
+    console.log('hey')
+    pauseFox.visible = true;
+    foxJump.animations.stop('jump', 0)
+    jump.isFinished = true;
+}
+
+
+
 
 function collisionHandler(object) {
     if (object.body.collideWorldBounds) {
