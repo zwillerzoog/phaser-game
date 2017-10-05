@@ -79,6 +79,7 @@ let treats;
 let cherry;
 let scoreText;
 let score = 0;
+let repeatFlower;
 
 
 function create() {
@@ -240,19 +241,22 @@ function createTrees() {
 }
 
 function createFlowers() {
-    parent = game.add.sprite(-100,530, 'flower1')
+    if (repeatFlower) {
+        console.log('hi', repeatFlower.body.velocity.x)
+    }
+    repeatFlower = game.add.sprite(-100,530, 'flower1')
     flower2 = game.make.sprite(1000,0, 'flower2')
     flower3 = game.make.sprite(600,0, 'flower3')
     flower4 = game.make.sprite(400,0, 'flower4')
     flower5 = game.make.sprite(800, 0, 'flower1')
-    parent.addChild(flower2)
-    parent.addChild(flower3)
-    parent.addChild(flower4)
-    parent.enableBody = true;
+    repeatFlower.addChild(flower2)
+    repeatFlower.addChild(flower3)
+    repeatFlower.addChild(flower4)
+    repeatFlower.enableBody = true;
     flower2.enableBody = true;
     flower3.enableBody = true;
     flower4.enableBody = true;
-    game.physics.enable(parent)
+    game.physics.enable(repeatFlower)
     // obstacles = game.add.group();
     // obstacles.enableBody = true;
     // console.log(obstacles)
@@ -282,6 +286,11 @@ function update() {
     game.physics.arcade.overlap(fox, flower2, overlap, null, this)
     game.physics.arcade.overlap(fox, flower3, overlap, null, this)
     game.physics.arcade.overlap(fox, flower4, overlap, null, this)
+    
+    game.physics.arcade.overlap(flower1, fox, overlap, null, this)
+    game.physics.arcade.overlap(flower2, fox, overlap, null, this)
+    game.physics.arcade.overlap(flower3, fox, overlap, null, this)
+    game.physics.arcade.overlap(flower4, fox, overlap, null, this)
     // game.physics.arcade.moveToObject(foxJump, fox, 10, 100);
     // game.physics.arcade.moveToObject(pauseFox, fox, 50, 50)
     fox.body.velocity.x = 0;
@@ -333,9 +342,9 @@ function jumpRequest() {
     fox.kill()
     pauseFox.kill();
     foxJump.animations.play('jump')
-    foxJump.body.velocity.y = -100
-    fox.body.velocity.y =-100
-    pauseFox.body.velocity.y = -100
+    // foxJump.body.velocity.y = -100
+    // fox.body.velocity.y =-100
+    // pauseFox.body.velocity.y = -100
 }
 
 function runRequest() {
@@ -356,12 +365,18 @@ function runRequest() {
     fox.scale.setTo(-1,1)
     fox.revive()
     fox.animations.play('fox', 30);
+
     }
 }
 
 function idle() {
-   
-    parent.body.velocity.x = 0;
+    //  console.log('reapeat', repeatFlower)
+    if (repeatFlower) {
+        repeatFlower.body.velocity.x = 0;
+    }
+    Phaser.Timer.pause = true;
+    // console.log(Phaser)
+    // parent.body.velocity.x = 0;
     flower2.body.velocity.x = 0;
     flower3.body.velocity.x = 0;
     flower4.body.velocity.x = 0;
@@ -378,7 +393,6 @@ function idle() {
 }
 
 function overlap(sprite, obstacle) {
-    console.log('his', obstacle)
     obstacle.kill();
     score += 10;
     scoreText.text = 'Score: ' + score;
